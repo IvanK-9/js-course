@@ -1,0 +1,350 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700&display=swap');
+
+:root {
+  --red: #e63946;
+  --red-dark: #c1121f;
+  --yellow: #ffd60a;
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --surface2: #0f3460;
+  --text: #eaeaea;
+  --text-muted: #8a9bb5;
+  --border: rgba(255,255,255,0.08);
+  --radius: 12px;
+  --pixel: 'Press Start 2P', monospace;
+  --body: 'Nunito', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(14,40,96,0.5) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(230,57,70,0.15) 0%, transparent 50%);
+}
+
+/* ── Header ─────────────────────────────────── */
+h1 {
+  font-family: var(--pixel);
+  font-size: 13px;
+  color: var(--yellow);
+  text-align: center;
+  letter-spacing: 2px;
+  margin-bottom: 2rem;
+  text-shadow: 3px 3px 0 var(--red-dark);
+}
+
+/* ── Pokeball decoration ─────────────────────── */
+h1::before {
+  content: '◉ ';
+  color: var(--red);
+}
+h1::after {
+  content: ' ◉';
+  color: var(--red);
+}
+
+/* ── Select row ──────────────────────────────── */
+.select-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 560px;
+  margin: 0 auto 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+}
+
+.select-row label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.select-row select {
+  flex: 1;
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.select-row select:focus {
+  border-color: var(--yellow);
+}
+
+/* ── Main content area ───────────────────────── */
+#poke-content {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ── Placeholder ─────────────────────────────── */
+.placeholder {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 3rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  letter-spacing: 0.04em;
+}
+
+/* ── Pokemon card ────────────────────────────── */
+.poke-main-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Card top: sprite + name ─────────────────── */
+.poke-top {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.sprite-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sprite-wrap img {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
+  cursor: pointer;
+  transition: transform 0.15s;
+  filter: drop-shadow(0 4px 16px rgba(255,214,10,0.3));
+}
+
+.sprite-wrap img:hover {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.sprite-hint {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.poke-name-block {
+  flex: 1;
+}
+
+.poke-id {
+  font-family: var(--pixel);
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.poke-name {
+  font-family: var(--pixel);
+  font-size: 14px;
+  color: var(--yellow);
+  text-shadow: 2px 2px 0 var(--red-dark);
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+.types-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* type colours */
+.type-fire     { background: #7c2d0e; color: #fb923c; }
+.type-water    { background: #0c3c6e; color: #60a5fa; }
+.type-grass    { background: #14532d; color: #4ade80; }
+.type-electric { background: #713f12; color: #facc15; }
+.type-psychic  { background: #500724; color: #f472b6; }
+.type-normal   { background: #374151; color: #d1d5db; }
+.type-flying   { background: #312e81; color: #818cf8; }
+.type-poison   { background: #3b0764; color: #c084fc; }
+.type-bug      { background: #1a2e05; color: #84cc16; }
+.type-rock     { background: #44403c; color: #a8a29e; }
+.type-ground   { background: #431407; color: #fb923c; }
+.type-ice      { background: #0c2461; color: #93c5fd; }
+.type-dragon   { background: #1e1b4b; color: #818cf8; }
+.type-ghost    { background: #2e1065; color: #a78bfa; }
+.type-dark     { background: #1c1917; color: #a8a29e; }
+.type-steel    { background: #1e293b; color: #94a3b8; }
+.type-fairy    { background: #500724; color: #fb7185; }
+.type-fighting { background: #7f1d1d; color: #fca5a5; }
+
+/* ── Stats grid ──────────────────────────────── */
+.poke-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-cell {
+  background: var(--surface);
+  padding: 14px 18px;
+}
+
+.stat-cell .label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.stat-cell .value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── Base stats bars ─────────────────────────── */
+.poke-bars {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.bars-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.bar-name {
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 90px;
+  flex-shrink: 0;
+  text-transform: capitalize;
+}
+
+.bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-num {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  width: 30px;
+  text-align: right;
+}
+
+/* ── Abilities ───────────────────────────────── */
+.poke-abilities {
+  padding: 1.25rem 1.5rem;
+}
+
+.abilities-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.abilities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ability-tag {
+  background: rgba(255, 214, 10, 0.1);
+  border: 1px solid rgba(255, 214, 10, 0.25);
+  color: var(--yellow);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+/* ── Loading dot ─────────────────────────────── */
+.loading-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 0.3; }
+  50%      { opacity: 1; }
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 480px) {
+  h1 { font-size: 9px; }
+  .poke-top { flex-direction: column; text-align: center; }
+  .types-row { justify-content: center; }
+  .poke-stats { grid-template-columns: 1fr 1fr; }
+}

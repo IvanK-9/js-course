@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>PokéViewer | JSON API Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* main app card */
+        .app-container {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(0px);
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* header section */
+        .app-header {
+            background: #ef5350;
+            background: linear-gradient(135deg, #ef5350, #c62828);
+            padding: 1.6rem 2rem;
+            color: white;
+        }
+
+        .app-header h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-header h1::before {
+            content: "⚡";
+            font-size: 2rem;
+        }
+
+        .sub {
+            opacity: 0.9;
+            font-size: 0.9rem;
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        /* search & quick panel */
+        .search-panel {
+            padding: 1.6rem 2rem 1rem 2rem;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+        }
+
+        #pokemonInput {
+            flex: 3;
+            min-width: 180px;
+            padding: 0.9rem 1.2rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 60px;
+            background: #fefefe;
+            transition: all 0.2s;
+            font-weight: 500;
+            outline: none;
+        }
+
+        #pokemonInput:focus {
+            border-color: #ef5350;
+            box-shadow: 0 0 0 3px rgba(239, 83, 80, 0.2);
+        }
+
+        #searchBtn {
+            flex: 0.8;
+            background: #ef5350;
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 0 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.05s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        #searchBtn:hover {
+            background: #d32f2f;
+            transform: scale(0.98);
+        }
+
+        /* suggestion chips */
+        .quick-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .chip {
+            background: #f1f5f9;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .chip:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+            border-color: #ef5350;
+            color: #c62828;
+        }
+
+        /* main content area */
+        .content-area {
+            padding: 2rem;
+            min-height: 460px;
+            transition: all 0.2s;
+        }
+
+        /* startpage placeholder */
+        .start-message {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: #fef9e3;
+            border-radius: 2rem;
+            border: 2px dashed #ffcd7e;
+            color: #b45309;
+        }
+
+        .start-message .emoji-big {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .start-message h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        /* Pokemon detail card */
+        .pokemon-card {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .pokemon-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px solid #ffcd7e;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pokemon-name {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ef5350, #f9a825);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-transform: capitalize;
+        }
+
+        .pokemon-id {
+            background: #f1f5f9;
+            padding: 0.2rem 1rem;
+            border-radius: 60px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            background: #f8fafc;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .abilities-list {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2c3e66;
+            text-transform: capitalize;
+        }
+
+        /* sprites section: front & back */
+        .sprites-section {
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .sprite-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #334155;
+            border-left: 5px solid #ef5350;
+            padding-left: 12px;
+        }
+
+        .sprite-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 2rem;
+            background: #fef9e3;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .sprite-card {
+            text-align: center;
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            flex: 1;
+            min-width: 160px;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .sprite-card:hover {
+            transform: scale(1.02);
+        }
+
+        .sprite-card img {
+            max-width: 160px;
+            height: auto;
+            image-rendering: crisp-edges;
+        }
+
+        .sprite-label {
+            margin-top: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .error-message {
+            background: #ffe6e5;
+            border-left: 8px solid #ef5350;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            color: #b91c1c;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 2rem;
+            color: #ef5350;
+            font-weight: 600;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 4px solid #ffe0e0;
+            border-top: 4px solid #ef5350;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding: 1rem;
+            color: #5b6e8c;
+            background: #fefefe;
+        }
+
+        @media (max-width: 640px) {
+            .app-container {
+                border-radius: 1.5rem;
+            }
+            .content-area {
+                padding: 1.2rem;
+            }
+            .pokemon-name {
+                font-size: 1.5rem;
+            }
+            .sprite-card img {
+                max-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="app-header">
+        <h1>Pokémon (JSON API test)</h1>
+        <div class="sub">Explore real data · Front & Back sprites · Abilities & stats</div>
+    </div>
+
+    <div class="search-panel">
+        <div class="input-group">
+            <input type="text" id="pokemonInput" placeholder="Enter Pokémon name... (e.g., butterfree, pikachu, charizard)" autocomplete="off" value="butterfree">
+            <button id="searchBtn">🔍 Search</button>
+        </div>
+        <div class="quick-chips">
+            <span class="chip" data-name="butterfree">🦋 Butterfree</span>
+            <span class="chip" data-name="pikachu">⚡ Pikachu</span>
+            <span class="chip" data-name="charizard">🔥 Charizard</span>
+            <span class="chip" data-name="bulbasaur">🌿 Bulbasaur</span>
+            <span class="chip" data-name="jigglypuff">🎤 Jigglypuff</span>
+            <span class="chip" data-name="metapod">🐛 Metapod</span>
+        </div>
+        <div style="font-size:0.7rem; margin-top:12px; color:#6c757d;">✨ <strong>Tip:</strong> Try "butterfree" for perfect demo, or any official Pokémon</div>
+    </div>
+
+    <div class="content-area" id="contentArea">
+        <!-- Startpage default message (nothing selected) -->
+        <div id="dynamicContent">
+            <div class="start-message">
+                <div class="emoji-big">🎴</div>
+                <h3>Choose something</h3>
+                <p style="margin-top: 8px;">Search a Pokémon or click on a chip above to see its data ✨</p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        🐾 Powered by <strong>PokeAPI</strong> (RESTful JSON) · Front & back official sprites
+    </footer>
+</div>
+
+<script>
+    // DOM elements
+    const contentContainer = document.getElementById('dynamicContent');
+    const searchInput = document.getElementById('pokemonInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const chips = document.querySelectorAll('.chip');
+
+    // Application state
+    let currentPokemonData = null;     // stores fetched pokemon object (null if none/error)
+    let currentError = null;           // stores error string if any
+    let isLoading = false;              // loading state
+
+    // Helper: reset to "choose something" state (only used on startup / optional reset)
+    // but as per spec, once user selects anything we never show start message again unless explicit clear.
+    // However we respect "when nothing selected" -> text appears. By default page load: nothing selected.
+    // After any fetch (even error) we never revert to start message automatically.
+    // For optional clear we can add a reset? not required but to keep flexible,
+    // we keep function but we won't call unless custom. We'll rely on state.
+    function renderStartMessage() {
+        contentContainer.innerHTML = `
+            <div class="start-message">
+                <div class="emoji-big">🎴</div>
+                <h3>Choose something</h3>
+                <p style="margin-top: 8px;">Search a Pokémon or click on a chip above to see its data ✨</p>
+            </div>
+        `;
+    }
+
+    // render error message (selection happened, so start message disappears)
+    function renderError(message) {
+        contentContainer.innerHTML = `
+            <div class="error-message">
+                ⚠️ <strong>Error:</strong> ${message}<br>
+                <span style="font-size:0.85rem;">Please check the name or try another Pokémon.</span>
+            </div>
+        `;
+    }
+
+    // render loading skeleton
+    function renderLoading() {
+        contentContainer.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <span>Loading Pokémon data...</span>
+            </div>
+        `;
+    }
+
+    // Render pokemon details with front & back sprites
+    function renderPokemonDetails(pokemon) {
+        // destructure from our enriched object
+        const {
+            name, id, height, weight, baseExperience,
+            abilities, frontSprite, backSprite
+        } = pokemon;
+
+        // format abilities nicely
+        const abilitiesText = abilities.length ? abilities.join(', ') : 'none';
+
+        // Helper to handle missing sprites gracefully
+        const frontImg = frontSprite ? `<img src="${frontSprite}" alt="front sprite of ${name}">` : '<div style="padding:1rem; background:#f1f5f9; border-radius:1rem;">🖼️ No front sprite</div>';
+        const backImg = backSprite ? `<img src="${backSprite}" alt="back sprite of ${name}">` : '<div style="padding:1rem; background:#f1f5f9; border-radius:1rem;">🖼️ No back sprite</div>';
+
+        const html = `
+            <div class="pokemon-card">
+                <div class="pokemon-header">
+                    <span class="pokemon-name">${name}</span>
+                    <span class="pokemon-id">#${String(id).padStart(3, '0')}</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item"><span class="stat-label">Height</span><span class="stat-value">${height} dm</span></div>
+                    <div class="stat-item"><span class="stat-label">Weight</span><span class="stat-value">${weight} hg</span></div>
+                    <div class="stat-item"><span class="stat-label">Base Experience</span><span class="stat-value">${baseExperience}</span></div>
+                    <div class="stat-item"><span class="stat-label">Abilities</span><span class="stat-value abilities-list">${abilitiesText}</span></div>
+                </div>
+
+                <div class="sprites-section">
+                    <div class="sprite-title">📸 Picture gallery</div>
+                    <div class="sprite-container">
+                        <div class="sprite-card">
+                            ${frontImg}
+                            <div class="sprite-label">🎴 Front-side</div>
+                        </div>
+                        <div class="sprite-card">
+                            ${backImg}
+                            <div class="sprite-label">🔁 Back-side</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; font-size:0.75rem; text-align:center; color:#6c757d;">
+                    <span>✨ Select a Pokémon: ${name}</span>
+                </div>
+            </div>
+        `;
+        contentContainer.innerHTML = html;
+    }
+
+    // Main rendering dispatcher based on state
+    function updateUI() {
+        // if loading, show loading
+        if (isLoading) {
+            renderLoading();
+            return;
+        }
+
+        // if we have valid Pokemon data -> show details
+        if (currentPokemonData) {
+            renderPokemonDetails(currentPokemonData);
+            return;
+        }
+
+        // if error exists (selection attempted but failed)
+        if (currentError) {
+            renderError(currentError);
+            return;
+        }
+
+        // otherwise: nothing selected, no error, no loading -> startpage "Choose something"
+        renderStartMessage();
+    }
+
+    // fetch pokemon data from PokeAPI and normalize
+    async function fetchPokemonData(pokemonName) {
+        // trim and lowercase
+        const cleanName = pokemonName.trim().toLowerCase();
+        if (!cleanName) {
+            // empty search = invalid selection: we treat as error, but user performed selection? 
+            // According to spec they selected something (even empty) we must disappear "choose something". Show error.
+            currentError = "Please enter a Pokémon name.";
+            currentPokemonData = null;
+            isLoading = false;
+            updateUI();
+            return;
+        }
+
+        // start loading, clear old data/errors
+        isLoading = true;
+        currentPokemonData = null;
+        currentError = null;
+        updateUI(); // shows loading spinner
+
+        try {
+            const url = `https://pokeapi.co/api/v2/pokemon/${cleanName}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error(`"${cleanName}" not found. Try a valid Pokémon (e.g., butterfree, pikachu).`);
+                } else {
+                    throw new Error(`API error (${response.status}). Please try again.`);
+                }
+            }
+
+            const data = await response.json();
+            
+            // map needed fields
+            const name = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+            const id = data.id;
+            const height = data.height;        // decimetres
+            const weight = data.weight;        // hectograms
+            const baseExperience = data.base_experience ?? 0;
+            
+            // abilities: get ability names and filter hidden? but display all
+            const abilities = data.abilities.map(ab => ab.ability.name.replace('-', ' '));
+            
+            // sprites: front default & back default
+            const frontSprite = data.sprites?.front_default || null;
+            const backSprite = data.sprites?.back_default || null;
+            
+            const enrichedPokemon = {
+                name,
+                id,
+                height,
+                weight,
+                baseExperience,
+                abilities,
+                frontSprite,
+                backSprite
+            };
+            
+            // success: set data, clear errors
+            currentPokemonData = enrichedPokemon;
+            currentError = null;
+            isLoading = false;
+            updateUI();
+        } catch (err) {
+            console.error("Fetch error:", err);
+            currentPokemonData = null;
+            currentError = err.message || "Failed to load Pokémon. Check network or name.";
+            isLoading = false;
+            updateUI();
+        }
+    }
+
+    // event handler for search
+    function onSearch() {
+        const query = searchInput.value;
+        if (!query.trim()) {
+            // If user clicks search with empty field, we still consider "selection" occurred -> show error,
+            // start message disappears (as per spec: when something chosen, text disappears)
+            currentPokemonData = null;
+            currentError = "Please enter a Pokémon name to search!";
+            isLoading = false;
+            updateUI();
+            return;
+        }
+        fetchPokemonData(query);
+    }
+
+    // chip click handler
+    function onChipClick(event) {
+        const chip = event.currentTarget;
+        const pokemonName = chip.getAttribute('data-name');
+        if (pokemonName) {
+            searchInput.value = pokemonName;
+            fetchPokemonData(pokemonName);
+        }
+    }
+
+    // Optional: allow "Enter" key in search field
+    function onInputKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            onSearch();
+        }
+    }
+
+    // initialize event listeners
+    function init() {
+        searchBtn.addEventListener('click', onSearch);
+        searchInput.addEventListener('keypress', onInputKeyPress);
+        chips.forEach(chip => {
+            chip.addEventListener('click', onChipClick);
+        });
+        
+        // initial state: nothing selected -> start message is shown (choose something)
+        currentPokemonData = null;
+        currentError = null;
+        isLoading = false;
+        updateUI();  // renders start message because all null
+    }
+
+    // run init
+    init();
+</script>
+</body>
+</html>

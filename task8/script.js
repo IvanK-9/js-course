@@ -5,13 +5,13 @@ const roses = [
   { color: 'Pink',   src: 'Rose-pink.jpg',   badge: '#c2607a' }
 ];
 
-// ── Elements ───────────────────────────────────────────────────────────────
+// ── Elements ─────────────────────────────────────────────────────────────
 const select     = document.getElementById('colorSelect');
 const img        = document.getElementById('roseImage');
 const badge      = document.getElementById('colorBadge');
 const noticeList = document.getElementById('noticeList');
 
-// ── 1) Build dropdown dynamically ─────────────────────────────────────────
+// ── 1) Build dropdown dynamically ───────────────────────────────────────
 roses.forEach(function(rose, i) {
   const opt = document.createElement('option');
   opt.value = i;

@@ -1,28 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cream: #fdf8f4;
+  --rose-dark: #7b2d3e;
+  --rose-mid: #c2607a;
+  --rose-light: #f0c4ce;
+  --text: #2e1a20;
+  --shadow: rgba(123, 45, 62, 0.18);
+}
+
 body {
-  font-family: Arial, sans-serif;
+  background: var(--cream);
+  font-family: 'Lato', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px 80px;
+}
+
+/* ── Header ── */
+.page-header {
   text-align: center;
-  margin-top: 50px;
-  background-color: #f5f5f5;
+  margin-bottom: 48px;
 }
 
-h1 {
-  color: #333;
-  font-size: 2em;
-  margin-bottom: 20px;
+.page-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  color: var(--rose-dark);
+  letter-spacing: 0.03em;
+  line-height: 1;
 }
 
-label, select {
-  font-size: 16px;
-  margin: 10px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.page-header .subtitle {
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rose-mid);
+  margin-top: 6px;
 }
 
-img {
-  width: 300px;
-  border: 2px solid #ccc;
+/* ── Card ── */
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 40px var(--shadow);
+  padding: 36px 36px 40px;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+/* ── Dropdown ── */
+.selector-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  justify-content: center;
+}
+
+.selector-row label {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+#colorSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237b2d3e' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border: 1.5px solid var(--rose-light);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+  padding: 8px 36px 8px 14px;
+  font-size: 0.95rem;
+  color: var(--text);
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  transition: border-color 0.2s;
+  min-width: 110px;
+}
+
+#colorSelect:focus {
+  outline: none;
+  border-color: var(--rose-mid);
+}
+
+/* ── Image ── */
+.img-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+  cursor: pointer;
+}
+
+#roseImage {
+  width: 280px;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 6px 28px var(--shadow);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s ease;
+  display: block;
+  user-select: none;
+}
+
+#roseImage.zoomed {
+  transform: scale(1.22);
+  box-shadow: 0 18px 54px var(--shadow);
+}
+
+/* ── Color badge ── */
+.color-badge {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--rose-dark);
+  transition: background 0.3s;
+}
+
+/* ── Notice list ── */
+.notice-section {
+  width: 100%;
+}
+
+.notice-section .notice-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rose-mid);
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+#noticeList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 24px;
+}
+
+#noticeList li {
+  font-size: 0.88rem;
+  color: var(--text);
+  padding: 5px 12px;
+  background: var(--rose-light);
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  animation: fadeIn 0.25s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Divider ── */
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--rose-light), transparent);
+  border-radius: 2px;
 }

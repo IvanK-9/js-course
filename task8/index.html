@@ -1,21 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roses — Color Selector</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roses</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Roses</h1>
-  <label for="colorSelect">Select color:</label>
-  <select id="colorSelect">
-    <option value="yellow">Yellow</option>
-    <option value="red">Red</option>
-    <option value="pink">Pink</option>
-  </select>
-  <br><br>
-  <img id="roseImage" src="Rose-yellow.jpg" alt="Rose">
+
+  <div class="page-header">
+    <h1>Roses</h1>
+    <p class="subtitle">Choose your colour</p>
+  </div>
+
+  <div class="card">
+
+    <div class="selector-row">
+      <label for="colorSelect">Choose color:</label>
+      <select id="colorSelect"></select>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="img-wrapper">
+      <img id="roseImage" src="" alt="Rose" />
+    </div>
+
+    <span class="color-badge" id="colorBadge"></span>
+
+    <div class="notice-section">
+      <p class="notice-label">Clicks</p>
+      <ul id="noticeList"></ul>
+    </div>
+
+  </div>
 
   <script src="script.js"></script>
 </body>

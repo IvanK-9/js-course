@@ -1,0 +1,30 @@
+* {
+    margin: 0;
+    padding: 0;    
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+}
+
+header {
+    background: #f4f4f4;
+    padding: 1rem;
+    text-align: center;
+}
+.drpDwn {
+    text-align: center;
+    margin: auto;
+    width: 500px;
+    overflow: auto;
+    padding: 1rem 1rem;
+    list-style: none; /* Just for myList */
+}
+.menus{
+    margin-bottom: 40px; /* just for space with flower and picture */ 
+}
+.picture img{
+    width: 150px;
+}
+
